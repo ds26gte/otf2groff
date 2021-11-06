@@ -100,7 +100,7 @@ http://fontsquirrel.com/fonts/eb-garamond.  As above, copy the
 `EBGaramond.otf` to `groffonts/devps` and convert it to the groff
 font `ebgaramondR`:
 
-  otf2groff EBGaramond.otf ebgaramondR
+  otf2groff EBGaramond12-Regular.otf ebgaramondR
 
 and add the `download.addition` line to `devps/download`.
 
@@ -119,5 +119,5 @@ In your document, use
 
   .ftr B pagellaB
 
-// Last modified: 2021-11-05
+// Last modified: 2021-11-06
 // 2017-09-03

@@ -1,0 +1,7 @@
+# last modified 2021-11-06
+
+otf2fam linbiolinum \
+  LinBiolinum_R.otf \
+  LinBiolinum_RI.otf \
+  LinBiolinum_RB.otf \
+  doesnt_exist

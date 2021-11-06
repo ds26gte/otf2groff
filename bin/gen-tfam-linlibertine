@@ -1,0 +1,7 @@
+# last modified 2021-11-06
+
+otf2fam linlibertine \
+  LinLibertine_R.otf \
+  LinLibertine_RI.otf \
+  LinLibertine_RB.otf \
+  LinLibertine_RBI.otf
