@@ -1,0 +1,7 @@
+# last modified 2020-12-21
+
+otf2fam notosans \
+    NotoSans-Regular.otf \
+    NotoSans-Italic.otf \
+    NotoSans-Bold.otf \
+    NotoSans-BoldItalic.otf

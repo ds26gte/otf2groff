@@ -1,0 +1,7 @@
+# last modified 2020-12-06
+
+otf2fam georgia \
+    Georgia.otf \
+    Georgia_Italic.otf \
+    Georgia_Bold.otf \
+    Georgia_Bold_Italic.otf

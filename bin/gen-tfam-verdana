@@ -1,0 +1,7 @@
+# last modified 2021-01-25
+
+otf2fam verdana \
+    Verdana.otf \
+    Verdana_Italic.otf \
+    Verdana_Bold.otf \
+    Verdana_Bold_Italic.otf

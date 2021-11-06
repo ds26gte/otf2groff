@@ -1,0 +1,123 @@
+= Adding OpenType Fonts to groff
+
+The enclosed OTF conversion script, `otf2groff`, was constructed
+using info from
+https://lists.gnu.org/archive/html/groff/2010-09/msg00000.html[posts
+by Pierre-Jean Fichet in 2010 in the groff mailing list].
+
+groff comes with a set of fonts in its default font directory,
+which is something like `/usr/share/groff/current/font`.  This
+contains subdirectories `devps`, `devdvi` etc.  In order to add
+your own fonts, it is best to specify your own `font` directory,
+e.g., `~/groffinputs/font`. To inform groff of this
+addition, set the environment variable `GROFF_FONT_PATH`:
+
+  export GROFF_FONT_PATH=~/groffinputs/font
+
+As an example, let us now add the Baskervald OpenType font (OTF)
+to groff.  Baskervald is a Baskerville-like free font available
+as Linux package `fonts-adf-baskervald` or as a zip file from
+from http://arkandis.tuxfamily.org/adffonts.html. If using the
+latter approach, unpack the
+zip file in your `~/.fonts` directory. Wherever these fonts
+reside on your system, the relevant OTF files for us are
+
+  BaskervaldADFStd.otf
+  BaskervaldADFStd-Italic.otf
+  BaskervaldADFStd-Bold.otf
+  BaskervaldADFStd-BoldItalic.otf
+
+and can be checked by searching for them in the font list
+produced by running the command `fc-list`.
+
+These are now to be
+transformed into a four-element _font family_ that is suitable
+for groff.  For this, use the provided script `otf2groff` (inside
+the `bin` subdirectory),
+which takes two arguments: the name of the OTF font and the name
+preferred for the corresponding groff font.  E.g.,
+
+  otf2groff BaskervaldADFStd.otf baskervaldR
+
+`otf2groff` is smart enough to figure out where the OTF font
+resides and where the groff font should go -- viz., the `devps`
+subdirectory in the first
+directory in `GROFF_FONTS_PATH`, in our case
+`~/groffonts/font/devps`. `otf2groff` will create this
+directory if you haven't already.
+
+The `otf2groff` call creates the groff font `baskervaldR` in the
+font directory, and also adds a line
+
+  BaskervaldADFStd BaskervaldADFStd.pfa
+
+to the file `download` in the same directory. (This file is
+created if it doesn't already exist, and `otf2groff` knows not to
+add redundant lines to it.)
+
+Here, the prefix `baskervald` identifies the family name that
+will be used by groff, and the suffix `R` denotes that it is the
+"Regular" (default, noRmal, upRight, Roman) style.
+
+Similarly, convert the other Baskervald OTFs, taking care to use
+the same prefix (`baskervald`) and the suffixes `I`, `B`, and
+`BI` for the Italic, Bold and Bold-Italic styles. I.e.,
+
+  otf2groff BaskervaldADFStd-Italic.otf baskervaldI
+  otf2groff BaskervaldADFStd-Bold.otf baskervaldB
+  otf2groff BaskervaldADFStd-BoldItalic.otf baskervaldBI
+
+You're now ready to use the `baskervald` font in groff.  Call groff
+with the option `-f baskervald` on your document, say `doc.ms`.
+
+  groff -f baskervald -ms doc.ms > doc.ps
+  ps2pdf doc.ps doc.pdf
+
+`doc.pdf` should now be in Baskervald rather than groff's default
+Times.
+
+It is also possible to set the font family within the groff
+document, using the command
+
+  .fam baskervald
+
+NOTE: You can set your groff's output device to `pdf` rather than
+`ps` either with the command-line option `-T pdf` or by setting
+the environment variable `GROFF_TYPESETTER` to `pdf`. This has
+groff directly create the `pdf` output without need for `ps2pdf`.
+In this case, you have to ensure that the font files from
+`groffinputs/font/devps` are visible to groff. This is accomplished by
+having `groffinputs/font/devpdf` be a soft link to
+`groffinputs/font/devps`. `otf2groff` takes care of this if you
+haven't already.
+
+== Using single-style fonts
+
+You may prefer to use just one style of an OTF, perhaps because
+the OTF comes in only one style.  Let's say we want to set the
+body text in EB Garamond, obtainable from
+http://fontsquirrel.com/fonts/eb-garamond.  As above, copy the
+`EBGaramond.otf` to `groffonts/devps` and convert it to the groff
+font `ebgaramondR`:
+
+  otf2groff EBGaramond.otf ebgaramondR
+
+and add the `download.addition` line to `devps/download`.
+
+In your document, have
+
+  .fp 1 ebgaramondR
+
+Sometimes, the single style you want is the bold, possibly for
+section headers.  Thus, to install the bold from TeX Gyre Pagella,
+(available in Linux package `fonts-texgyre` or from
+http://www.gust.org.pl/projects/e-foundry/tex-gyre/pagella), call
+
+  otf2groff texgyrepagella-bold.otf pagellaB
+
+In your document, use
+
+  .ftr B pagellaB
+
+// Last modified: 2021-11-05
+// 2017-09-03

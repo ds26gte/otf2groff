@@ -1,0 +1,71 @@
+# last change 2021-11-05
+# 2011-11-15
+
+fname=$1
+
+fontdir=$(echo $GROFF_FONT_PATH|sed -e 's/^\([^:]\+\).*/\1/')
+
+test -d $fontdir/devps || mkdir -p $fontdir/devps
+
+test -d $fontdir/devpdf || ln -sf $fontdir/devps $fontdir/devpdf
+
+cd $fontdir/devps
+
+ext=${fname##*.}
+
+if test "$ext" = otf; then
+  otfname=$fname
+  otfbasename=${otfname%.otf}
+  ttfname=$otfbasename.ttf
+elif test "$ext" = ttf; then
+  ttfname=$fname
+  otfbasename=${ttfname%.ttf}
+  otfname=$otfbasename.otf
+else
+  otfbasename=$fname
+  otfname=$otfbasename.otf
+  ttfname=$otfbasename.ttf
+fi
+
+fullotfname=$(fc-list|grep $otfname:|head -1|sed -e 's/:\s\+.*//')
+
+export FONTFORGE_LANGUAGE=ff
+
+if test -f "$fullotfname"; then
+  cp "$fullotfname" .
+else
+  echo Missing OTF file: $otfname
+  fullttfname=$(fc-list|grep $ttfname:|head -1|sed -e 's/:\s\+.*//')
+  if test -f "$fullttfname"; then
+    cp "$fullttfname" .
+    echo Converting $ttfname to $otfname
+    fontforge -c "Open(\"$ttfname\"); Generate(\"$otfname\")"
+  else
+    echo Missing TTF file too: $ttfname
+    exit
+  fi
+fi
+
+echo Converting $otfname to groff font
+
+groffname=$2
+
+if test -n "$(which fontforge)"; then
+  fontforge -c "Open(\"$otfname\"); Generate(\"$otfbasename.pfa\"); Generate(\"$otfbasename.afm\")"
+else 
+  cfftot1 -a $otfname > $otfbasename.pfa
+  t1rawafm $otfbasename.pfa > $otfbasename.afm
+fi
+
+afmtodit -d DESC $otfbasename.afm textmap $groffname
+
+sed -i -e \
+"s/---\t\([^\t]*\)\t\([^\t]*\)\t\([^\t]*\)\t\(.*\)/\4\t\1\t\2\t\3\t\4/" \
+$groffname
+
+psname=$(grep FontName $otfbasename.pfa |
+sed -e 's/^\/[^ ]* *\/\([^ ]*\).*/\1/')
+
+echo $psname $otfbasename.pfa >> download
+
+sort -u -o download download

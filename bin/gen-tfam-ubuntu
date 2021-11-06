@@ -1,0 +1,7 @@
+# last change 2020-11-17
+
+otf2fam ubuntu \
+    Ubuntu-R.otf \
+    Ubuntu-RI.otf \
+    Ubuntu-B.otf \
+    Ubuntu-BI.otf
