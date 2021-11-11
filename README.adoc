@@ -76,8 +76,23 @@ with the option `-f baskervald` on your document, say `doc.ms`.
 `doc.pdf` should now be in Baskervald rather than groff's default
 Times.
 
-It is also possible to set the font family within the groff
-document, using the command
+The script `otf2fam` is provided as convenience to create these
+4-member families that groff loves. Thus:
+
+  otf2fam baskervald \
+    BaskervaldADFStd.otf \
+    BaskervaldADFStd-Italic.otf \
+    BaskervaldADFStd-Bold.otf \
+    BaskervaldADFStd-BoldItalic.otf
+
+replaces the four calls to `otf2groff` and saves you some typing
+(6 words instead of 12). The distribution provides some
+`gen-tfam-*` scripts that further abbreviates the task of
+creating some common fonts, and you can modify them for your own
+favorites.
+
+You can now use these newly created fonts to set the font family
+within the groff document, using the command
 
   .fam baskervald
 
@@ -96,13 +111,10 @@ haven't already.
 You may prefer to use just one style of an OTF, perhaps because
 the OTF comes in only one style.  Let's say we want to set the
 body text in EB Garamond, obtainable from
-http://fontsquirrel.com/fonts/eb-garamond.  As above, copy the
-`EBGaramond.otf` to `groffonts/devps` and convert it to the groff
-font `ebgaramondR`:
+http://fontsquirrel.com/fonts/eb-garamond.  Convert it to the
+groff font `ebgaramondR` with:
 
   otf2groff EBGaramond12-Regular.otf ebgaramondR
-
-and add the `download.addition` line to `devps/download`.
 
 In your document, have
 
@@ -118,6 +130,11 @@ http://www.gust.org.pl/projects/e-foundry/tex-gyre/pagella), call
 In your document, use
 
   .ftr B pagellaB
+
+NOTE: In our `ebgaramondR` example, it would seem we could have
+used `.ftr R ebgaramondR` to set the body font. Unfortunately
+that doesn't work. You have to use `.fp 1`. The `.ftr` approach
+works for `I`, `B`, and `BI` though.
 
 // Last modified: 2021-11-06
 // 2017-09-03
